@@ -15,9 +15,9 @@ resource "random_id" "salt" {
 }
 
 resource "aws_elasticache_replication_group" "redis" {
-  replication_group_id          = format("%.20s", "${var.name}-${var.env}")
-  replication_group_description = "Terraform-managed ElastiCache replication group for ${var.name}-${var.env}-${local.vpc_name}"
-  number_cache_clusters         = var.redis_clusters
+  replication_group_id          = format("%.40s", "${var.name}-${var.env}")
+  description                   = "Terraform-managed ElastiCache replication group for ${var.name}-${var.env}"
+  num_cache_clusters            = var.redis_clusters
   node_type                     = var.redis_node_type
   automatic_failover_enabled    = var.redis_failover
   auto_minor_version_upgrade    = var.auto_minor_version_upgrade
@@ -41,13 +41,15 @@ resource "aws_elasticache_replication_group" "redis" {
   notification_topic_arn        = var.notification_topic_arn
   snapshot_window               = var.redis_snapshot_window
   snapshot_retention_limit      = var.redis_snapshot_retention_limit
-  tags                          = merge(tomap({"Name" = format("tf-elasticache-%s-%s", var.name, local.vpc_name)}), var.tags)
+  tags                          = merge({ "Name" = format("tf-elasticache-%s", var.name) },var.tags)
+  transit_encryption_enabled    = var.transit_encryption_enabled
+  auth_token                    = var.transit_encryption_enabled ? var.auth_token : null
 }
 
 resource "aws_elasticache_parameter_group" "redis_parameter_group" {
-  name = replace(format("%.255s", lower(replace("tf-redis-${var.name}-${var.env}-${local.vpc_name}-${random_id.salt.hex}", "_", "-"))), "/\\s/", "-")
+  name = replace(format("%.255s", lower(replace("tf-redis-${var.name}-${var.env}-${random_id.salt.hex}", "_", "-"))), "/\\s/", "-")
 
-  description = "Terraform-managed ElastiCache parameter group for ${var.name}-${var.env}-${local.vpc_name}"
+  description = "Terraform-managed ElastiCache parameter group for ${var.name}-${var.env}"
 
   # Strip the patch version from redis_version var
   family = local.parameter_group_family
@@ -65,6 +67,6 @@ resource "aws_elasticache_parameter_group" "redis_parameter_group" {
 }
 
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
-  name       = replace(format("%.255s", lower(replace("tf-redis-${var.name}-${var.env}-${local.vpc_name}", "_", "-"))), "/\\s/", "-")
+  name       = replace(format("%.255s", lower(replace("tf-redis-${var.name}-${var.env}", "_", "-"))), "/\\s/", "-")
   subnet_ids = var.subnets
 }
