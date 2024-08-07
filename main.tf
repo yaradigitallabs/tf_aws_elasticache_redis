@@ -33,7 +33,7 @@ resource "aws_elasticache_replication_group" "redis" {
   parameter_group_name          = aws_elasticache_parameter_group.redis_parameter_group.id
   subnet_group_name             = aws_elasticache_subnet_group.redis_subnet_group.id
   security_group_names          = var.security_group_names
-  security_group_ids            = [aws_security_group.redis_security_group.id]
+  security_group_ids            = compact([aws_security_group.redis_security_group.id, var.enable_vpn_sg ? var.vpn_sg_id : ""])
   snapshot_arns                 = var.snapshot_arns
   snapshot_name                 = var.snapshot_name
   apply_immediately             = var.apply_immediately
