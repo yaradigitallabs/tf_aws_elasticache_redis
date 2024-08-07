@@ -32,6 +32,18 @@ variable "allowed_security_groups" {
   default     = []
 }
 
+variable "enable_vpn_sg" {
+  description = "Specifies whether to explicitly reference VPC SG for the Redis Instance"
+  type        = bool
+  default     = false
+}
+
+variable "vpn_sg_id" {
+  description = "VPC SG id to explicitly reference under Network & Security for the Redis Instance"
+  type        = string
+  default     = ""
+}
+
 variable "env" {
   description = "env to deploy into, should typically dev/staging/prod"
   type        = string
