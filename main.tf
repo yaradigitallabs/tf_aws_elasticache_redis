@@ -7,23 +7,23 @@ resource "random_id" "salt" {
 }
 
 resource "aws_elasticache_replication_group" "redis" {
-  replication_group_id          = format("${var.format_length}", "${var.name}-${var.env}")
-  description                   = "Terraform-managed ElastiCache replication group for ${var.name}-${var.env}"
-  num_cache_clusters            = var.redis_clusters
-  node_type                     = var.redis_node_type
-  automatic_failover_enabled    = var.redis_failover
-  engine_version                = var.redis_version
-  port                          = var.redis_port
-  parameter_group_name          = aws_elasticache_parameter_group.redis_parameter_group.id
-  subnet_group_name             = aws_elasticache_subnet_group.redis_subnet_group.id
-  security_group_ids            = compact([aws_security_group.redis_security_group.id, var.enable_vpn_sg ? var.vpn_sg_id : ""])
-  apply_immediately             = var.apply_immediately
-  maintenance_window            = var.redis_maintenance_window
-  snapshot_window               = var.redis_snapshot_window
-  snapshot_retention_limit      = var.redis_snapshot_retention_limit
-  tags                          = merge({ "Name" = format("tf-elasticache-%s", var.name) },var.tags)
-  transit_encryption_enabled    = var.transit_encryption_enabled
-  auth_token                    = var.transit_encryption_enabled ? var.auth_token : null
+  replication_group_id       = format("${var.format_length}", "${var.name}-${var.env}")
+  description                = "Terraform-managed ElastiCache replication group for ${var.name}-${var.env}"
+  num_cache_clusters         = var.redis_clusters
+  node_type                  = var.redis_node_type
+  automatic_failover_enabled = var.redis_failover
+  engine_version             = var.redis_version
+  port                       = var.redis_port
+  parameter_group_name       = aws_elasticache_parameter_group.redis_parameter_group.id
+  subnet_group_name          = aws_elasticache_subnet_group.redis_subnet_group.id
+  security_group_ids         = compact([aws_security_group.redis_security_group.id, var.enable_vpn_sg ? var.vpn_sg_id : ""])
+  apply_immediately          = var.apply_immediately
+  maintenance_window         = var.redis_maintenance_window
+  snapshot_window            = var.redis_snapshot_window
+  snapshot_retention_limit   = var.redis_snapshot_retention_limit
+  tags                       = merge({ "Name" = format("tf-elasticache-%s", var.name) }, var.tags)
+  transit_encryption_enabled = var.transit_encryption_enabled
+  auth_token                 = var.transit_encryption_enabled ? var.auth_token : null
 }
 
 resource "aws_elasticache_parameter_group" "redis_parameter_group" {
@@ -44,9 +44,11 @@ resource "aws_elasticache_parameter_group" "redis_parameter_group" {
   lifecycle {
     create_before_destroy = true
   }
+  tags = merge({ "Name" = format("tf-elasticache-%s", var.name) }, var.tags)
 }
 
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
   name       = replace(format("%.255s", lower(replace("tf-redis-${var.name}-${var.env}", "_", "-"))), "/\\s/", "-")
   subnet_ids = var.subnets
+  tags       = merge({ "Name" = format("tf-elasticache-%s", var.name) }, var.tags)
 }
