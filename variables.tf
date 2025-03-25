@@ -128,6 +128,12 @@ variable "transit_encryption_enabled" {
   description = "Enable TLS"
 }
 
+variable "at_rest_encryption_enabled" {
+  type        = bool
+  default     = true
+  description = "Enable encryption at rest"
+}
+
 variable "auth_token" {
   type        = string
   description = "token for password protecting redis, transit_encryption_enabled must`` be set to  `true`. Password must be longer than 16 chars"

@@ -23,6 +23,7 @@ resource "aws_elasticache_replication_group" "redis" {
   snapshot_retention_limit   = var.redis_snapshot_retention_limit
   tags                       = merge({ "Name" = format("tf-elasticache-%s", var.name) }, var.tags)
   transit_encryption_enabled = var.transit_encryption_enabled
+  at_rest_encryption_enabled = var.at_rest_encryption_enabled
   auth_token                 = var.transit_encryption_enabled ? var.auth_token : null
 }
 
