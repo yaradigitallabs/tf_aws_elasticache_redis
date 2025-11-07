@@ -145,3 +145,7 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "auth_token_update_strategy" {
+  type        = string
+}
