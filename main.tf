@@ -25,6 +25,7 @@ resource "aws_elasticache_replication_group" "redis" {
   transit_encryption_enabled = var.transit_encryption_enabled
   at_rest_encryption_enabled = var.at_rest_encryption_enabled
   auth_token                 = var.transit_encryption_enabled ? var.auth_token : null
+  auth_token_update_strategy = var.transit_encryption_enabled ? var.auth_token_update_strategy : null
 }
 
 resource "aws_elasticache_parameter_group" "redis_parameter_group" {
