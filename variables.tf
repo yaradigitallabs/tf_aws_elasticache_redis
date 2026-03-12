@@ -86,6 +86,12 @@ variable "subnets" {
   description = "List of VPC Subnet IDs for the cache subnet group"
 }
 
+variable "redis_engine" {
+  description = "Name of the cache engine to be used for the clusters in this replication group"
+  type        = string
+  default     = "redis"
+}
+
 # might want a map
 variable "redis_version" {
   description = "Redis version to use, defaults to 3.2.10"
