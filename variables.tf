@@ -153,5 +153,5 @@ variable "tags" {
 }
 
 variable "auth_token_update_strategy" {
-  type        = string
+  type = string
 }
